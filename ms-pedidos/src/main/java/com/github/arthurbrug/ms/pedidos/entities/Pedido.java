@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -30,4 +32,16 @@ public class Pedido {
     private Status status;
     //valor calculado
     private BigDecimal valorTotal;
+
+
+
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<ItemDoPedido> itens = new ArrayList<>();
+
+    public void calcularValorTotalDoPedido(){
+        this.valorTotal = this.itens.stream()
+                .map(i -> i.getPrecoUnitario()
+                        .multiply(BigDecimal.valueOf(i.getQuantidade()))).reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
 }
