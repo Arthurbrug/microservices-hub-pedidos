@@ -1,5 +1,7 @@
 package com.github.arthurbrug.ms.pedidos.dto;
 
+import com.github.arthurbrug.ms.pedidos.entities.ItemDoPedido;
+import com.github.arthurbrug.ms.pedidos.entities.Pedido;
 import com.github.arthurbrug.ms.pedidos.entities.Status;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -35,5 +37,21 @@ public class PedidoDTO {
     private Status status;
     private BigDecimal valorTotal;
     private List<@Valid ItemDoPedidoDTO> itens = new ArrayList<>();
+
+
+    public PedidoDTO(Pedido pedido){
+        id = pedido.getId();
+        nome = pedido.getNome();
+        cpf = pedido.getCpf();
+        data = pedido.getData();
+        status = pedido.getStatus();
+        valorTotal = pedido.getValorTotal();
+
+        // para os itens do pedido
+        for (ItemDoPedido item : pedido.getItens()){
+            ItemDoPedidoDTO itemDTO = new ItemDoPedidoDTO(item);
+            itens.add(itemDTO);
+        }
+    }
 
 }
