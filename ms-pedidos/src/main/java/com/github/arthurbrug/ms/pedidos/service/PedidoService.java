@@ -80,4 +80,13 @@ public class PedidoService {
             throw new ResourceNotFoundException("Recuso não encontrado. ID: " + id);
         }
     }
+
+    @Transactional
+    public void deletePedidoById(Long id){
+        if (!pedidoRepository.existsById(id)){
+            throw new ResourceNotFoundException("Recursos não encontrados. ID: " + id);
+        }
+
+        pedidoRepository.deleteById(id);
+    }
 }
