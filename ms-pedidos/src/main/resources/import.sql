@@ -3,4 +3,4 @@ INSERT INTO tb_pedido(nome, cpf, data, status, valor_total) VALUES('Jayra Stark'
 
 INSERT INTO tb_item_do_pedido(quantidade, descricao, preco_unitario, pedido_id) VALUES(2, 'Mouse', 250.0, 1);
 INSERT INTO tb_item_do_pedido(quantidade, descricao, preco_unitario, pedido_id) VALUES(2, 'Teclado', 240.0, 2);
-INSERT INTO tb_item_do_pedido(quantidade, descricao, preco_unitario, pedido_id) VALUES(3, 'tela', 230.0, 3);
+INSERT INTO tb_item_do_pedido(quantidade, descricao, preco_unitario, pedido_id) VALUES(3, 'tela', 230.0, 1);
