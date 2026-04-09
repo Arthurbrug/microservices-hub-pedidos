@@ -1,5 +1,9 @@
 package com.github.arthurbrug.ms.pagamentos.exceptions.handler;
 
+import com.github.arthurbrug.ms.pagamentos.exceptions.DatabaseException;
+import com.github.arthurbrug.ms.pagamentos.exceptions.ResourceNotFoundException;
+import com.github.arthurbrug.ms.pagamentos.exceptions.dto.CustomErrorDTO;
+import com.github.arthurbrug.ms.pagamentos.exceptions.dto.ValidationErrorDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -73,16 +77,16 @@ public class GlobalExceptionHandler {
     }
 
     // 500 - fallback para qualquer erro não tratado
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<CustomErrorDTO> handleGenericException(Exception e,
-                                                                 HttpServletRequest request) {
-        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR; // 500
-        CustomErrorDTO err = new CustomErrorDTO(
-                Instant.now(), status.value(),
-                "Erro interno inesperado.",
-                request.getRequestURI()
-        );
-
-        return ResponseEntity.status(status).body(err);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<CustomErrorDTO> handleGenericException(Exception e,
+//                                                                 HttpServletRequest request) {
+//        HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR; // 500
+//        CustomErrorDTO err = new CustomErrorDTO(
+//                Instant.now(), status.value(),
+//                "Erro interno inesperado.",
+//                request.getRequestURI()
+//        );
+//
+//        return ResponseEntity.status(status).body(err);
+//    }
 }

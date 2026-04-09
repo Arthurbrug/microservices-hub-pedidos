@@ -1,5 +1,6 @@
 package com.github.arthurbrug.ms.pagamentos.dto;
 
+import com.github.arthurbrug.ms.pagamentos.entities.Pagamento;
 import com.github.arthurbrug.ms.pagamentos.entities.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -35,4 +36,16 @@ public class PagamentosDTO {
     private Status status;
     @NotNull(message = "o campo ID do pedido é obrigatorio")
     private Long pedidoId;
+
+
+    public PagamentosDTO(Pagamento pagamento){
+        id = pagamento.getId();
+        valor = pagamento.getValor();
+        nome= pagamento.getNome();
+        numeroCartao = pagamento.getNumeroCartao();
+        validade = pagamento.getValidade();
+        codigoSegurancao = pagamento.getCodigoSeguranca();
+        status=pagamento.getStatus();
+        pedidoId = pagamento.getPedidoId();
+    }
 }
