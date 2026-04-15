@@ -27,7 +27,7 @@ public class PagamentoService {
     @Transactional(readOnly = true)
     public PagamentosDTO findPagamentosById(Long id){
         Pagamento pagamento = pagamentoRepository.findById(id).orElseThrow(
-                () -> new ResolutionException("Recurso não encontrado. Id: " + id)
+                () -> new ResourceNotFoundException("Recurso não encontrado. Id: " + id)
         );
 
         return new PagamentosDTO(pagamento);
