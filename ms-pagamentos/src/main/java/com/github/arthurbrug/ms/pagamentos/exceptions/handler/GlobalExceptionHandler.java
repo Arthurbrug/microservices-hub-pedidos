@@ -1,6 +1,7 @@
 package com.github.arthurbrug.ms.pagamentos.exceptions.handler;
 
 import com.github.arthurbrug.ms.pagamentos.exceptions.DatabaseException;
+import com.github.arthurbrug.ms.pagamentos.exceptions.PagamentosAprovadoException;
 import com.github.arthurbrug.ms.pagamentos.exceptions.ResourceNotFoundException;
 import com.github.arthurbrug.ms.pagamentos.exceptions.dto.CustomErrorDTO;
 import com.github.arthurbrug.ms.pagamentos.exceptions.dto.ValidationErrorDTO;
@@ -72,6 +73,23 @@ public class GlobalExceptionHandler {
         HttpStatus status = HttpStatus.CONFLICT; //409
         CustomErrorDTO err = new CustomErrorDTO(Instant.now(), status.value(),
                 e.getMessage(), request.getRequestURI());
+
+        return ResponseEntity.status(status).body(err);
+    }
+
+    @ExceptionHandler(PagamentosAprovadoException.class)
+    public ResponseEntity<CustomErrorDTO> handlePagamentoAprovado(
+            PagamentosAprovadoException e,
+            HttpServletRequest request) {
+
+        HttpStatus status = HttpStatus.CONFLICT;
+
+        CustomErrorDTO err = new CustomErrorDTO(
+                Instant.now(),
+                status.value(),
+                e.getMessage(),
+                request.getRequestURI()
+        );
 
         return ResponseEntity.status(status).body(err);
     }

@@ -3,6 +3,7 @@ package com.github.arthurbrug.ms.pagamentos.controller;
 import com.github.arthurbrug.ms.pagamentos.dto.PagamentosDTO;
 import com.github.arthurbrug.ms.pagamentos.service.PagamentoService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.ServletRequestBindingException;
@@ -57,6 +58,15 @@ public class PagamentoController {
     public ResponseEntity<PagamentosDTO> deletePagamento(@PathVariable Long id){
         pagamentoService.deletePagamentoById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/confirmar")
+    public ResponseEntity<PagamentosDTO> confirmarPagamentoDoPedido(
+            @PathVariable @NotNull Long id) {
+
+        PagamentosDTO dto = pagamentoService.confirmarPagamentoDoPedido(id);
+
+        return ResponseEntity.ok(dto);
     }
 
 }

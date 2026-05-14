@@ -1,8 +1,10 @@
 package com.github.arthurbrug.ms.pagamentos.service;
 
+import com.github.arthurbrug.ms.pagamentos.client.PedidoClient;
 import com.github.arthurbrug.ms.pagamentos.dto.PagamentosDTO;
 import com.github.arthurbrug.ms.pagamentos.entities.Pagamento;
 import com.github.arthurbrug.ms.pagamentos.entities.Status;
+import com.github.arthurbrug.ms.pagamentos.exceptions.PagamentosAprovadoException;
 import com.github.arthurbrug.ms.pagamentos.exceptions.ResourceNotFoundException;
 import com.github.arthurbrug.ms.pagamentos.repository.PagamentoRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -17,6 +19,11 @@ import java.util.List;
 public class PagamentoService {
     @Autowired
     private PagamentoRepository pagamentoRepository;
+
+    @Autowired
+    private PedidoClient pedidoClient;
+
+
 
     @Transactional(readOnly = true)
     public List<PagamentosDTO> findAllPagamentos(){
@@ -52,19 +59,6 @@ public class PagamentoService {
     }
 
     @Transactional
-    public PagamentosDTO updatePagamento(Long id,  PagamentosDTO pagamentosDTO){
-        try {
-            Pagamento pagamento = pagamentoRepository.getReferenceById(id);
-            mapperDtoToPagamento(pagamentosDTO, pagamento);
-            pagamento.setStatus(pagamentosDTO.getStatus());
-            pagamento = pagamentoRepository.save(pagamento);
-            return new PagamentosDTO(pagamento);
-        } catch (EntityNotFoundException e){
-            throw new ResolutionException("Recursos não encontrado. ID" + id);
-        }
-    }
-
-    @Transactional
     public void deletePagamentoById(Long id){
         if (!pagamentoRepository.existsById(id)){
             throw new ResourceNotFoundException("recurso nao encontrado ID: " + id);
@@ -73,5 +67,39 @@ public class PagamentoService {
     }
 
 
+
+    @Transactional
+    public PagamentosDTO confirmarPagamentoDoPedido(Long id) {
+
+        Pagamento pagamento = pagamentoRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Pagamento não encontrado. ID: " + id)
+        );
+
+        pagamento.setStatus(Status.APROVADO);
+        pagamentoRepository.save(pagamento);
+
+        pedidoClient.confirmarPagamento(pagamento.getPedidoId());
+
+        return new PagamentosDTO(pagamento);
+    }
+
+    @Transactional
+    public PagamentosDTO updatePagamento(Long id, PagamentosDTO pagamentoDTO){
+
+        try {
+            Pagamento pagamento = pagamentoRepository.getReferenceById(id);
+            if (pagamento.getStatus().equals(Status.APROVADO)){
+                throw new PagamentosAprovadoException(
+                        String.format("Pagamento id %d já está APROVADO e não pode ser alterado", id)
+                );
+            }
+           mapperDtoToPagamento(pagamentoDTO, pagamento);
+            pagamento.setStatus(pagamentoDTO.getStatus());
+            pagamento = pagamentoRepository.save(pagamento);
+            return new PagamentosDTO(pagamento);
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException("Recurso não encontrado. ID: " + id);
+        }
+    }
 
 }
